@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<constant name="struts.multipart.maxSize" value="100000000" />
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="true" />
+
+	<package name="default" namespace="/" extends="struts-default">
+
+		<default-action-ref name="index" />
+
+	</package>
+
+	<!-- Add packages here -->
+	<package name="com.happy" namespace="/" extends="struts-default">
+		<default-action-ref name="index"></default-action-ref>
+		<action name="index" class="com.happy.action.IndexAction"
+			method="index">
+			<result name="index">WEB-INF/pages/index.jsp</result>
+		</action>
+
+		<action name="menu_*" class="com.happy.action.MenuAction"
+			method="{1}">
+			<result name="addSplash">WEB-INF/pages/splash/addSplash.jsp</result>
+			<result name="listSplash">WEB-INF/pages/splash/listSplash.jsp</result>
+
+
+			<result name="addAPP">WEB-INF/pages/app/addAPP.jsp</result>
+			<result name="listAPP">WEB-INF/pages/app/listAPP.jsp</result>
+
+
+			<result name="addSkinTheme">WEB-INF/pages/skinTheme/addSkinTheme.jsp</result>
+			<result name="listSkinTheme">WEB-INF/pages/skinTheme/listSkinTheme.jsp
+			</result>
+
+			<result name="addKsc">WEB-INF/pages/ksc/addKsc.jsp</result>
+			<result name="listKsc">WEB-INF/pages/ksc/listKsc.jsp</result>
+
+
+			<result name="addSingerAvatar">WEB-INF/pages/singerAvatar/addSingerAvatar.jsp
+			</result>
+			<result name="listSingerAvatar">WEB-INF/pages/singerAvatar/listSingerAvatar.jsp
+			</result>
+
+
+			<result name="addSingerPhoto">WEB-INF/pages/singerPhoto/addSingerPhoto.jsp
+			</result>
+			<result name="listSingerPhoto">WEB-INF/pages/singerPhoto/listSingerPhoto.jsp
+			</result>
+
+			<result name="addSongInfo">WEB-INF/pages/songInfo/addSongInfo.jsp
+			</result>
+			<result name="listSongInfo">WEB-INF/pages/songInfo/listSongInfo.jsp
+			</result>
+
+
+			<result name="addEasyTouchTheme">WEB-INF/pages/easyTouchTheme/addEasyTouchTheme.jsp
+			</result>
+			<result name="listEasyTouchTheme">WEB-INF/pages/easyTouchTheme/listEasyTouchTheme.jsp
+			</result>
+
+		</action>
+
+		<action name="splash_*" class="com.happy.action.SplashAction"
+			method="{1}">
+		</action>
+
+		<action name="app_*" class="com.happy.action.APPAction" method="{1}">
+		</action>
+
+		<action name="skinTheme_*" class="com.happy.action.SkinThemeAction"
+			method="{1}">
+		</action>
+
+		<action name="singerAvatar_*" class="com.happy.action.SingerAvatarAction"
+			method="{1}">
+		</action>
+
+		<action name="singerPhoto_*" class="com.happy.action.SingerPhotoAction"
+			method="{1}">
+		</action>
+
+		<action name="songInfo_*" class="com.happy.action.SongInfoAction"
+			method="{1}">
+		</action>
+
+		<action name="easyTouchTheme_*" class="com.happy.action.EasyTouchThemeAction"
+			method="{1}">
+		</action>
+		<action name="ksc_*" class="com.happy.action.KscAction" method="{1}">
+		</action>
+	</package>
+	<package name="com.happy.action.phone" namespace="/phone"
+		extends="struts-default">
+		<action name="*" method="{1}" class="com.happy.action.phone.PhoneAction">
+			<!-- <result name="error">/common/404.html</result> -->
+		</action>
+	</package>
+</struts>

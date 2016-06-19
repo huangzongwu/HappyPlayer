@@ -1,0 +1,6 @@
+--htmlparser2.0
+  filterbuilder.jar
+  htmllexer.jar
+  htmlparser.jar
+  sitecapturer.jar
+  thumbelina.jar
