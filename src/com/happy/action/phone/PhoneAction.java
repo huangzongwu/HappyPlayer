@@ -1,6 +1,5 @@
 package com.happy.action.phone;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +20,7 @@ import com.happy.action.SplashAction;
 import com.happy.model.AppInfo;
 import com.happy.model.EasyTouchTheme;
 import com.happy.model.KscInfo;
+import com.happy.model.PluginInfo;
 import com.happy.model.SingerAvatar;
 import com.happy.model.SingerPhoto;
 import com.happy.model.SkinTheme;
@@ -29,6 +29,7 @@ import com.happy.model.Splash;
 import com.happy.service.APPService;
 import com.happy.service.EasyTouchThemeService;
 import com.happy.service.KscService;
+import com.happy.service.PluginService;
 import com.happy.service.SingerAvatarService;
 import com.happy.service.SingerPhotoService;
 import com.happy.service.SkinThemeService;
@@ -125,6 +126,17 @@ public class PhoneAction {
 	public void setEasyTouchThemeService(
 			EasyTouchThemeService easyTouchThemeService) {
 		this.easyTouchThemeService = easyTouchThemeService;
+	}
+
+	private PluginService pluginService;
+
+	public PluginService getPluginService() {
+		return pluginService;
+	}
+
+	@Resource(name = "pluginService")
+	public void setPluginService(PluginService service) {
+		this.pluginService = service;
 	}
 
 	private Logger logger = Logger.getLogger(SplashAction.class.getName());
@@ -518,119 +530,51 @@ public class PhoneAction {
 	}
 
 	/**
-	 * 下载文件
-	 * 
-	 * @param request
-	 * @param response
-	 * @param fileName
-	 * @param fSize
-	 * @param datas
-	 * @throws IOException
+	 * 下载插件文件
 	 */
-	private void downloadFile(HttpServletRequest request,
-			HttpServletResponse response, String fileName, long fSize,
-			byte[] datas) throws IOException {
-		// 下载
-		response.setContentType("application/x-download");
+	public void getPluginInfoDataByID() {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		String pid = request.getParameter("pid");
+		PluginInfo pluginInfo = pluginService.getPluginInfoDataByID(pid);
+		if (pluginInfo == null) {
+			return;
+		}
+		String fileName = pluginInfo.getPid() + "." + pluginInfo.getFileType();
+		try {
+			service(request, response, fileName, pluginInfo.getSize(),
+					pluginInfo.getData());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-		response.setHeader("Accept-Ranges", "bytes");
-		response.setHeader("Content-Length", String.valueOf(fSize));
-		response.setHeader("Content-Disposition", "attachment; filename="
-				+ fileName);
-		long pos = 0;
-		if (null != request.getHeader("Range")) {
-			// 断点续传
-			response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-			try {
-				pos = Long.parseLong(request.getHeader("Range")
-						.replaceAll("bytes=", "").replaceAll("-", ""));
-			} catch (NumberFormatException e) {
-				// System.out.println(request.getHeader("Range")
-				// + " is not Number!");
-				pos = 0;
-			}
-		}
-		ServletOutputStream out = response.getOutputStream();
-		BufferedOutputStream bufferOut = new BufferedOutputStream(out);
-		InputStream inputStream = new ByteArrayInputStream(datas);
-		String contentRange = new StringBuffer("bytes ")
-				.append(new Long(pos).toString()).append("-")
-				.append(new Long(fSize - 1).toString()).append("/")
-				.append(new Long(fSize).toString()).toString();
-		response.setHeader("Content-Range", contentRange);
-		// System.out.println("Content-Range = " + contentRange);
-		inputStream.skip(pos);
-		byte[] buffer = new byte[5 * 1024];
-		int length = 0;
-		while ((length = inputStream.read(buffer, 0, buffer.length)) != -1) {
-			bufferOut.write(buffer, 0, length);
-		}
-		bufferOut.flush();
-		bufferOut.close();
-		out.close();
-		inputStream.close();
+	/**
+	 * 加载更多插件
+	 */
+	public void loadMorePluginInfoByCreateTime() {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		String createTime = request.getParameter("createTime");
+
+		Object result = pluginService
+				.loadMorePluginInfoByCreateTime(createTime);
+		printResponse(result);
+	}
+
+	/**
+	 * 加载新的插件
+	 */
+	public void loadNewPluginInfoByCreateTime() {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		String createTime = request.getParameter("createTime");
+
+		Object result = pluginService.loadNewPluginInfoByCreateTime(createTime);
+		printResponse(result);
 	}
 
 	protected void service(HttpServletRequest request,
 			HttpServletResponse response, String fileName, long fSize,
 			byte[] datas) throws IOException {
-
-		// // 获取浏览器类型
-		// String browser = request.getHeader("user-agent");
-		// // 设置响应头，206支持断点续传
-		// int http_status = 206;
-		// if (browser.contains("MSIE"))
-		// http_status = 200;// 200 响应头，不支持断点续传
-		// response.reset();
-		// response.setStatus(http_status);
-		// // 响应头
-		// response.setContentType("application/octet-stream;charset=UTF-8");
-		// // 下载起始位置
-		// long since = 0;
-		// // 下载结束位置
-		// long until = fSize - 1;
-		// // 获取Range，下载范围
-		// String range = request.getHeader("range");
-		// if (range != null) {
-		// // 剖解range
-		// range = range.split("=")[1];
-		// String[] rs = range.split("-");
-		// try {
-		// since = Integer.parseInt(rs[0]);
-		// } catch (Exception e) {
-		// since = 0;
-		// }
-		//
-		// if (rs.length > 1) {
-		// try {
-		// until = Integer.parseInt(rs[1]);
-		// } catch (Exception e) {
-		// until = fSize - 1;
-		// }
-		//
-		// }
-		// }
-		// // 设置响应头
-		// response.setHeader("Accept-Ranges", "bytes");
-		// response.setHeader("Content-Range", "bytes " + since + "-" + until
-		// + "/" + fSize);
-		// // 文件名用ISO08859_1编码
-		// response.setHeader("Content-Disposition", "attachment; filename=\""
-		// + new String(fileName.getBytes(), "ISO8859_1") + "\"");
-		// response.setHeader("Content-Length", "" + (until - since + 1));
-		// ServletOutputStream out = response.getOutputStream();
-		// BufferedOutputStream bufferOut = new BufferedOutputStream(out);
-		// InputStream inputStream = new ByteArrayInputStream(datas);
-		// inputStream.skip(since);
-		// byte[] buffer = new byte[128 * 1024];
-		// int length = 0;
-		// while ((length = inputStream.read(buffer, 0, buffer.length)) != -1) {
-		// bufferOut.write(buffer, 0, length);
-		// }
-		// bufferOut.flush();
-		// bufferOut.close();
-		// out.close();
-		// inputStream.close();
 
 		String range = request.getHeader("RANGE");
 		int start = 0, end = 0;
@@ -642,13 +586,13 @@ public class PhoneAction {
 		int requestSize = 0;
 		if (end != 0 && end > start) {
 			requestSize = end - start;
-			response.addHeader("content-length", "" + (requestSize));
 		} else {
-			requestSize = Integer.MAX_VALUE;
+			requestSize = (int) fSize;
 		}
 
-		byte[] buffer = new byte[20 * 1024];
-
+		byte[] buffer = new byte[10 * 1024];
+		response.setHeader("Accept-Ranges", "bytes");
+		response.addHeader("content-length", "" + (requestSize));
 		response.setContentType("application/x-download");
 		response.setHeader("Content-Disposition", "attachment; filename=\""
 				+ new String(fileName.getBytes(), "ISO8859_1") + "\"");
@@ -660,15 +604,12 @@ public class PhoneAction {
 		inputStream.skip(start);
 		while (needSize > 0) {
 			int len = inputStream.read(buffer);
-			if (needSize < buffer.length) {
+			if (needSize < len) {
 				os.write(buffer, 0, needSize);
 			} else {
 				os.write(buffer, 0, len);
-				if (len < buffer.length) {
-					break;
-				}
 			}
-			needSize -= buffer.length;
+			needSize -= len;
 		}
 
 		inputStream.close();

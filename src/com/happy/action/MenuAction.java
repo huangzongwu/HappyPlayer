@@ -59,7 +59,7 @@ public class MenuAction extends ActionSupport {
 	public String listSingerPhoto() {
 		return "listSingerPhoto";
 	}
-	
+
 	public String addSongInfo() {
 		return "addSongInfo";
 	}
@@ -67,7 +67,7 @@ public class MenuAction extends ActionSupport {
 	public String listSongInfo() {
 		return "listSongInfo";
 	}
-	
+
 	public String addEasyTouchTheme() {
 		return "addEasyTouchTheme";
 	}
@@ -75,4 +75,13 @@ public class MenuAction extends ActionSupport {
 	public String listEasyTouchTheme() {
 		return "listEasyTouchTheme";
 	}
+
+	public String addPluginInfo() {
+		return "addPluginInfo";
+	}
+
+	public String listPluginInfo() {
+		return "listPluginInfo";
+	}
+
 }

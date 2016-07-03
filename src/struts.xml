@@ -62,6 +62,11 @@
 			<result name="listEasyTouchTheme">WEB-INF/pages/easyTouchTheme/listEasyTouchTheme.jsp
 			</result>
 
+			<result name="addPluginInfo">WEB-INF/pages/pluginInfo/addPluginInfo.jsp
+			</result>
+			<result name="listPluginInfo">WEB-INF/pages/pluginInfo/listPluginInfo.jsp
+			</result>
+
 		</action>
 
 		<action name="splash_*" class="com.happy.action.SplashAction"
@@ -91,6 +96,10 @@
 			method="{1}">
 		</action>
 		<action name="ksc_*" class="com.happy.action.KscAction" method="{1}">
+		</action>
+
+		<action name="pluginInfo_*" class="com.happy.action.PluginAction"
+			method="{1}">
 		</action>
 	</package>
 	<package name="com.happy.action.phone" namespace="/phone"

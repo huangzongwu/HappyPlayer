@@ -138,11 +138,11 @@
 			"menus" : [ {
 				"menuname" : "添加插件",
 				"icon" : "icon-nav",
-				"url" : "menu_addEasyTouchTheme.action"
+				"url" : "menu_addPluginInfo.action"
 			}, {
 				"menuname" : "插件管理",
 				"icon" : "icon-add",
-				"url" : "menu_listEasyTouchTheme.action"
+				"url" : "menu_listPluginInfo.action"
 			} ]
 		} ]
 	};
