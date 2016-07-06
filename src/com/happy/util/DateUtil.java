@@ -11,7 +11,6 @@ import java.util.Date;
  * @author Administrator 时间处理类。
  */
 public class DateUtil {
-	
 	/**
 	 * 尝试转换日期
 	 * 
